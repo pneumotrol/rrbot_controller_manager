@@ -10,7 +10,7 @@ def generate_launch_description():
     package = "rrbot_controller_manager"
     model_package = "rrbot_description"
 
-    # xacroからurdfの生成
+    # generate urdf from xacro
     robot_description = Command(
         [
             PathJoinSubstitution(FindExecutable(name="xacro")),
@@ -21,21 +21,22 @@ def generate_launch_description():
             " ",
             "use_gazebo:=true",
             " ",
-            "controllers_for_gazebo:=",
+            "controller_configs_for_gazebo:=",
             PathJoinSubstitution(
                 [FindPackageShare(package), "config", "controller.yaml"]
             ),
         ]
     )
 
-    # urdfと/joint_statesから/robot_descriptionと/tf（順運動学）をpublishするノード
+    # node to publish /robot_description and /tf (forward kinematics)
+    # calculated from urdf and /joint_states
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         parameters=[{"robot_description": robot_description}],
     )
 
-    # RViz2ノード
+    # RViz2
     rviz2 = Node(
         package="rviz2",
         executable="rviz2",
@@ -47,21 +48,21 @@ def generate_launch_description():
         ],
     )
 
-    # Gazeboノードのlaunch
+    # Gazebo
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [FindPackageShare("gazebo_ros"), "/launch", "/gazebo.launch.py"]
         )
     )
 
-    # Gazeboで/robot_descriptionをsubscribeしてrrbotという名前のモデルをspawnさせる
+    # spawn a rrbot model from /robot_description subscribe on Gazebo
     gazebo_spawner = Node(
         package="gazebo_ros",
         executable="spawn_entity.py",
         arguments=["-entity", "rrbot", "-topic", "robot_description"],
     )
 
-    # Gazeboで計算された/joint_stateをpublishするノード
+    # node to publish /joint_states calculated from Gazebo
     joint_state_broadcaster = Node(
         package="controller_manager",
         executable="spawner",
