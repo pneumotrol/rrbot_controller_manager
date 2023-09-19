@@ -6,3 +6,13 @@ controller_manager:
     # register controllers to controller manager
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
+
+    forward_effort_controller:
+      type: forward_command_controller/ForwardCommandController
+
+forward_effort_controller:
+  ros__parameters:
+    joints:
+      - joint1
+      - joint2
+    interface_name: effort

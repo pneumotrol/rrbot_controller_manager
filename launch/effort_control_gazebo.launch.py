@@ -73,6 +73,16 @@ def generate_launch_description():
         ],
     )
 
+    forward_effort_controller = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "forward_effort_controller",
+            "--controller-manager",
+            "/controller_manager",
+        ],
+    )
+
     return LaunchDescription(
         [
             robot_state_publisher,
@@ -80,5 +90,6 @@ def generate_launch_description():
             gazebo,
             gazebo_spawner,
             joint_state_broadcaster,
+            forward_effort_controller,
         ]
     )
