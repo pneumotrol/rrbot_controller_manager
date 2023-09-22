@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100 #Hz
+    update_rate: 1000 #Hz
     use_sim_time: true
 
     # register controllers to controller manager
@@ -10,9 +10,20 @@ controller_manager:
     forward_effort_controller:
       type: forward_command_controller/ForwardCommandController
 
+    position_controller:
+      type: position_controller/PositionController
+
 forward_effort_controller:
   ros__parameters:
     joints:
       - joint1
       - joint2
     interface_name: effort
+
+position_controller:
+  ros__parameters:
+    joints:
+      - joint1
+      - joint2
+    command_interface_name: effort
+    state_interface_name: position
